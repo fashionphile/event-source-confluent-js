@@ -2,7 +2,7 @@ import { IHeaders, Kafka, KafkaConfig, Message as KafkaMessage } from 'kafkajs';
 import { SchemaRegistry } from '@kafkajs/confluent-schema-registry';
 import { SchemaRegistryAPIClientArgs } from '@kafkajs/confluent-schema-registry/dist/api';
 import { v5 as uuid } from 'uuid';
-import EventMessages from './EventMessages';
+import { EventMessages } from './EventMessages';
 
 type ConfigType = {
     namespace: string,

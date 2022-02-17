@@ -1,7 +1,7 @@
-import BaseMessage from "./BaseMessage";
+import { BaseMessage } from "./BaseMessage";
 import { TopicMessages } from "./Producer";
 
-export default class EventMessages {
+export class EventMessages {
 
     topic: string;
     messages: BaseMessage[] = []
@@ -18,7 +18,7 @@ export default class EventMessages {
         return {
             topic: this.topic,
             messages: this.messages.map(m => {
-                return {value: m.messageToJson()}
+                return {value: m.toJson()}
             })
         }
     }

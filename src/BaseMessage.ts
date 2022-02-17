@@ -1,4 +1,4 @@
-export default class BaseMessage {
+export class BaseMessage {
 
     keyMap: {[key: string]: any} = {};
 
@@ -6,7 +6,7 @@ export default class BaseMessage {
         this.keyMap[property] = key; 
     }
 
-    messageToJson(): {[name: string]: any} {
+    toJson(): {[name: string]: any} {
         let jsonMessage: {[key: string]: any} = {};
         for(const keyValue of Object.entries(this)) {
             if(keyValue[0] === 'keyMap') continue;
