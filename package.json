@@ -1,0 +1,30 @@
+{
+  "name": "event-source-confluent-js",
+  "version": "1.0.0",
+  "description": "A simple package to wrap kafkajs and schema registry while enforcing our ",
+  "main": "dist/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@kafkajs/confluent-schema-registry": "^3.2.1",
+    "kafkajs": "^1.15.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/uuid": "^8.3.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fashionphile/event-source-confluent-js.git"
+
+  }
+}
