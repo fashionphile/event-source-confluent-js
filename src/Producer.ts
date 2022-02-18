@@ -32,7 +32,7 @@ export type TopicMessages = {
 }
 
 
-export default class Producer {
+export class Producer {
 
     private config: ConfigType;
     private registry: SchemaRegistry;

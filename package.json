@@ -1,6 +1,6 @@
 {
   "name": "event-source-confluent-js",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A simple package to wrap kafkajs and schema registry while enforcing our ",
   "main": "dist/index.js",
   "directories": {
@@ -25,6 +25,5 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fashionphile/event-source-confluent-js.git"
-
   }
 }
