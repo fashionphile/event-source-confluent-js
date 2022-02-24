@@ -51,20 +51,21 @@ export class Producer {
         }
 
         const topic = topicMessages.topic;
-        const keySchemaId = this.config.topics[topic].keySchemaId;
-        const valueSchemaId = this.config.topics[topic].valueSchemaId;
+        const topicConfig = this.config.topics[topic];
+        const keySchemaId = topicConfig.keySchemaId;
+        const valueSchemaId = topicConfig.valueSchemaId;
 
         let serializeMessages: KafkaMessage[] = [];
 
         for (const message of topicMessages.messages) {
             
-            if(message.value[this.config.topics[topic].keyName] == undefined) {
+            if(message.value[topicConfig.keyName] == undefined) {
                 throw new ReferenceError(`Message does not conatined proper keyName defined in config: ${JSON.stringify(topicMessages)}`);
             }
 
-            let messageKey = message.value[this.config.topics[topic].keyName];
-            if(this.config.topics[topic].compositKey) {
-                let compositKey = this.config.topics[topic].compositKey ?? "";
+            let messageKey = message.value[topicConfig.keyName];
+            if(topicConfig.compositKey) {
+                let compositKey = topicConfig.compositKey ?? "";
                 messageKey = messageKey.concat("|", message.value[compositKey]);
             }
 
