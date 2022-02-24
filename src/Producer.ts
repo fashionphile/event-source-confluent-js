@@ -45,7 +45,7 @@ export class Producer {
         this.kafka = new Kafka(kafkaConfig);
     }
 
-    async serializeMessages(topicMessages: TopicMessages) {
+    private async serializeMessages(topicMessages: TopicMessages) {
         if(this.config.topics[topicMessages.topic] == undefined) {
             throw new ReferenceError(`${topicMessages.topic} was not defined in config`)
         }
@@ -82,7 +82,7 @@ export class Producer {
         return serializeMessages;
     }
 
-    async send(topicMessages: TopicMessages | EventMessages) {
+    public async send(topicMessages: TopicMessages | EventMessages) {
 
         if(topicMessages instanceof EventMessages) {
             topicMessages = topicMessages.toJson();
