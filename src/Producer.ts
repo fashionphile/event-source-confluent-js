@@ -45,26 +45,27 @@ export class Producer {
         this.kafka = new Kafka(kafkaConfig);
     }
 
-    async serializeMessages(topicMessages: TopicMessages) {
+    private async serializeMessages(topicMessages: TopicMessages) {
         if(this.config.topics[topicMessages.topic] == undefined) {
             throw new ReferenceError(`${topicMessages.topic} was not defined in config`)
         }
 
         const topic = topicMessages.topic;
-        const keySchemaId = this.config.topics[topic].keySchemaId;
-        const valueSchemaId = this.config.topics[topic].valueSchemaId;
+        const topicConfig = this.config.topics[topic];
+        const keySchemaId = topicConfig.keySchemaId;
+        const valueSchemaId = topicConfig.valueSchemaId;
 
         let serializeMessages: KafkaMessage[] = [];
 
         for (const message of topicMessages.messages) {
             
-            if(message.value[this.config.topics[topic].keyName] == undefined) {
+            if(message.value[topicConfig.keyName] == undefined) {
                 throw new ReferenceError(`Message does not conatined proper keyName defined in config: ${JSON.stringify(topicMessages)}`);
             }
 
-            let messageKey = message.value[this.config.topics[topic].keyName];
-            if(this.config.topics[topic].compositKey) {
-                let compositKey = this.config.topics[topic].compositKey ?? "";
+            let messageKey = message.value[topicConfig.keyName];
+            if(topicConfig.compositKey) {
+                let compositKey = topicConfig.compositKey ?? "";
                 messageKey = messageKey.concat("|", message.value[compositKey]);
             }
 
@@ -82,7 +83,7 @@ export class Producer {
         return serializeMessages;
     }
 
-    async send(topicMessages: TopicMessages | EventMessages) {
+    public async send(topicMessages: TopicMessages | EventMessages) {
 
         if(topicMessages instanceof EventMessages) {
             topicMessages = topicMessages.toJson();
