@@ -32,4 +32,5 @@ azure-pipelines.yml
 *~
 test.ts
 test.js
+test.d.*
 tsconfig.json
