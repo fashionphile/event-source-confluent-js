@@ -1,6 +1,6 @@
 {
   "name": "event-source-confluent-js",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "A simple package to wrap kafkajs and schema registry while enforcing our ",
   "main": "dist/index.js",
   "directories": {

@@ -15,7 +15,6 @@ type ConfigType = {
             valueSchemaId: number,
         }
     }
-    skipSerialization?: boolean; 
 }
 
 type Message = {
@@ -60,7 +59,7 @@ export class Producer {
         for (const message of topicMessages.messages) {
             
             if(message.value[topicConfig.keyName] == undefined) {
-                throw new ReferenceError(`Message does not conatined proper keyName defined in config: ${JSON.stringify(topicMessages)}`);
+                throw new ReferenceError(`Message does not contain proper keyName defined in config: ${JSON.stringify(topicMessages)}`);
             }
 
             let messageKey = message.value[topicConfig.keyName];
@@ -92,8 +91,7 @@ export class Producer {
         await this.getProducer();
 
         try {
-
-            let messages = await this.processMessages(topicMessages);
+            let messages = await this.serializeMessages(topicMessages);
             let response = await this.producer.send({
                 topic: topicMessages.topic,
                 messages: messages,
@@ -104,21 +102,6 @@ export class Producer {
             await this.producer.disconnect();
             this.producer = undefined;
         }  
-    }
-
-    private async processMessages(topicMessages: TopicMessages) {
-
-        if (this.config.skipSerialization) {
-            return topicMessages.messages.map((message): KafkaMessage => {
-                const outgoingMessage: KafkaMessage = {
-                    key: message.key ?? undefined,
-                    headers: message.headers ?? undefined,
-                    value: JSON.stringify(message.value)
-                }
-                return outgoingMessage;
-            })
-        }
-        return await this.serializeMessages(topicMessages);
     }
 
     private async getProducer(){

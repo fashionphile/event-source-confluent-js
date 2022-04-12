@@ -31,3 +31,6 @@ azure-pipelines.yml
 *.swp
 *~
 test.ts
+test.js
+test.d.*
+tsconfig.json
