@@ -9,8 +9,8 @@ type ConfigType = {
     uuid: string,
     topics: {
         [topic: string]: {
-            keyName: string, 
-            compositKey?: string, 
+            keyName: string,
+            compositKey?: string,
             keySchemaId: number,
             valueSchemaId: number,
         }
@@ -19,7 +19,7 @@ type ConfigType = {
 
 type Message = {
     key?: Buffer | string | null
-    value: {[name: string]: any}
+    value: { [name: string]: any }
     partition?: number
     headers?: IHeaders
     timestamp?: string
@@ -36,7 +36,6 @@ export class Producer {
     private config: ConfigType;
     private registry: SchemaRegistry;
     private kafka: Kafka;
-    private producer?: any;
 
     constructor(config: ConfigType, registryConfig: SchemaRegistryAPIClientArgs, kafkaConfig: KafkaConfig) {
         this.config = config;
@@ -45,7 +44,7 @@ export class Producer {
     }
 
     private async serializeMessages(topicMessages: TopicMessages) {
-        if(this.config.topics[topicMessages.topic] == undefined) {
+        if (this.config.topics[topicMessages.topic] == undefined) {
             throw new ReferenceError(`${topicMessages.topic} was not defined in config`)
         }
 
@@ -57,59 +56,51 @@ export class Producer {
         let serializeMessages: KafkaMessage[] = [];
 
         for (const message of topicMessages.messages) {
-            
-            if(message.value[topicConfig.keyName] == undefined) {
+
+            if (message.value[topicConfig.keyName] == undefined) {
                 throw new ReferenceError(`Message does not contain proper keyName defined in config: ${JSON.stringify(topicMessages)}`);
             }
 
             let messageKey = message.value[topicConfig.keyName];
-            if(topicConfig.compositKey) {
+            if (topicConfig.compositKey) {
                 let compositKey = topicConfig.compositKey ?? "";
                 messageKey = messageKey.concat("|", message.value[compositKey]);
             }
 
             const outgoingMessage: KafkaMessage = {
-            key: await this.registry.encode(keySchemaId, messageKey),
-            value: await this.registry.encode(valueSchemaId, {
-                event_key: messageKey,
-                event_type: topic,
-                event_namespace: this.config.namespace,
-                payload: message.value
-            })
-          }
-          serializeMessages.push(outgoingMessage)
+                key: await this.registry.encode(keySchemaId, messageKey),
+                value: await this.registry.encode(valueSchemaId, {
+                    event_key: messageKey,
+                    event_type: topic,
+                    event_namespace: this.config.namespace,
+                    payload: message.value
+                })
+            }
+            serializeMessages.push(outgoingMessage)
         }
         return serializeMessages;
     }
 
     public async send(topicMessages: TopicMessages | EventMessages) {
 
-        if(topicMessages instanceof EventMessages) {
+        if (topicMessages instanceof EventMessages) {
             topicMessages = topicMessages.toJson();
         }
 
-        await this.getProducer();
-
+        const producer = this.kafka.producer();
         try {
-            let messages = await this.serializeMessages(topicMessages);
-            let response = await this.producer.send({
+            await producer.connect();
+            const messages = await this.serializeMessages(topicMessages);
+
+            const response = await producer.send({
                 topic: topicMessages.topic,
                 messages: messages,
             });
+
             console.debug(response);
-            return response;
         } finally {
-            await this.producer.disconnect();
-            this.producer = undefined;
-        }  
-    }
-
-    private async getProducer(){
-
-        if(!this.producer) {
-            this.producer = this.kafka.producer();
-            await this.producer.connect();
-        }   
+            await producer.disconnect();
+        }
     }
 
     public generateUuid(key: string): string {
