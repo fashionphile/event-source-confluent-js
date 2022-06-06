@@ -96,8 +96,6 @@ export class Producer {
                 topic: topicMessages.topic,
                 messages: messages,
             });
-
-            console.debug(response);
         } finally {
             await producer.disconnect();
         }
