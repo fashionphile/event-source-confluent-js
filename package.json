@@ -16,7 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "@kafkajs/confluent-schema-registry": "^3.2.1",
-    "kafkajs": "^1.15.0",
+    "kafkajs": "^1.16.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
